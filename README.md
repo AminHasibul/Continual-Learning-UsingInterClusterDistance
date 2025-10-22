@@ -9,13 +9,10 @@ This repository provides a modular and extensible framework for experimenting wi
 ### Key Features
 
 - **Custom Architectures**: Implementations of CNN and ResNet architectures optimized for continual learning
-  - SimpleCNN with feature extraction support for RICS
-- **Advanced Loss Functions**: Multiple loss functions including Knowledge Distillation, EWC, LwF, iCaRL, and RICS
-  - InterClusterLoss (RICS) for maximizing inter-cluster separation
+  - SimpleCNN with feature extraction support for ICF
 - **Continual Learning Strategies**: Ready-to-use strategies for preventing catastrophic forgetting
-  - ClusterAwareReplayFreeCL with RICS integration
+  - ClusterAwareReplayFreeCL with Inter CLuster Fitness Function  integration
 - **Benchmark Framework**: Tools for evaluating continual learning methods with comprehensive metrics
-- **Jupyter Notebook**: Interactive starter notebook with experiments and visualizations
 
 ## Project Structure
 
@@ -76,7 +73,7 @@ from losses import KnowledgeDistillationLoss, ElasticWeightConsolidationLoss, In
 from experiments import ContinualLearningBenchmark, ClusterAwareReplayFreeCL
 
 # Create a model
-model = CustomCNN(num_classes=10, input_channels=3)
+model = CustomResNet(num_classes=10, input_channels=3)
 
 # Create benchmark
 benchmark = ContinualLearningBenchmark(
@@ -86,7 +83,7 @@ benchmark = ContinualLearningBenchmark(
 )
 
 # Or use ClusterAwareReplayFreeCL with RICS
-model = SimpleCNN(in_channels=3, num_classes=10)
+model = CustomResNet(in_channels=3, num_classes=10)
 inter_cluster_loss = InterClusterLoss(lambda_reg=1.0)
 strategy = ClusterAwareReplayFreeCL(
     model=model,
