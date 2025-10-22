@@ -6,5 +6,9 @@ continual learning methods.
 """
 
 from .continual_learning_benchmark import ContinualLearningBenchmark
+from .cluster_aware_cl import ClusterAwareReplayFreeCL
 
-__all__ = ['ContinualLearningBenchmark']
+__all__ = [
+    'ContinualLearningBenchmark',
+    'ClusterAwareReplayFreeCL'
+]

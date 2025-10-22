@@ -10,6 +10,7 @@ from .custom_loss import (
     ElasticWeightConsolidationLoss,
     LwFLoss,
     iCaRLLoss,
+    InterClusterLoss,
     compute_fisher_information
 )
 
@@ -18,5 +19,6 @@ __all__ = [
     'ElasticWeightConsolidationLoss', 
     'LwFLoss',
     'iCaRLLoss',
+    'InterClusterLoss',
     'compute_fisher_information'
 ]

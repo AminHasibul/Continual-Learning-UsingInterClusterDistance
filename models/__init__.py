@@ -7,5 +7,12 @@ for continual learning tasks.
 
 from .custom_cnn import CustomCNN
 from .custom_resnet import CustomResNet, create_resnet18, create_resnet34
+from .simple_cnn import SimpleCNN
 
-__all__ = ['CustomCNN', 'CustomResNet', 'create_resnet18', 'create_resnet34']
+__all__ = [
+    'CustomCNN', 
+    'CustomResNet', 
+    'create_resnet18', 
+    'create_resnet34',
+    'SimpleCNN'
+]

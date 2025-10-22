@@ -273,6 +273,75 @@ class iCaRLLoss(nn.Module):
         return total_loss
 
 
+class InterClusterLoss(nn.Module):
+    """
+    Inter-Cluster Loss (RICS - Regularization via Inter-Cluster Separation).
+    
+    This loss acts as a "fitness function" to maximize the inter-cluster distance.
+    It pushes the feature clusters of new classes away from the centroids of old classes,
+    helping to prevent catastrophic forgetting in continual learning.
+    
+    Args:
+        lambda_reg (float): Regularization strength (default: 1.0)
+    """
+    
+    def __init__(self, lambda_reg=1.0):
+        super(InterClusterLoss, self).__init__()
+        self.lambda_reg = lambda_reg
+        self.class_centroids = {}
+    
+    def forward(self, features, targets):
+        """
+        Calculates the fitness by maximizing Euclidean distance between NORMALIZED features.
+        
+        Args:
+            features (torch.Tensor): Feature representations from the model
+            targets (torch.Tensor): Target labels
+            
+        Returns:
+            torch.Tensor: Inter-cluster loss value
+        """
+        if not self.class_centroids:
+            return torch.tensor(0.0, device=features.device)
+        
+        # Normalize features to have a unit length (L2 norm = 1)
+        # This prevents the loss from exploding by stopping the model from 
+        # making feature vectors infinitely long
+        features = F.normalize(features.view(features.size(0), -1), p=2, dim=1)
+        
+        loss = torch.tensor(0.0, device=features.device)
+        count = 0
+        current_classes = torch.unique(targets)
+        
+        for cls_idx in current_classes:
+            class_features = features[targets == cls_idx]
+            for old_cls_idx, old_centroid in self.class_centroids.items():
+                if cls_idx.item() != old_cls_idx:
+                    distance = torch.cdist(class_features, old_centroid.unsqueeze(0), p=2).mean()
+                    loss += -distance
+                    count += 1
+        
+        if count == 0:
+            return torch.tensor(0.0, device=features.device)
+        return self.lambda_reg * (loss / count)
+    
+    def update_centroids(self, features, targets):
+        """
+        Updates centroids for the current classes using NORMALIZED features.
+        
+        Args:
+            features (torch.Tensor): Feature representations from the model
+            targets (torch.Tensor): Target labels
+        """
+        features = F.normalize(features.view(features.size(0), -1), p=2, dim=1)
+        
+        for cls in torch.unique(targets):
+            mask = targets == cls
+            class_features = features[mask]
+            if class_features.size(0) > 0:
+                self.class_centroids[cls.item()] = class_features.mean(dim=0).detach()
+
+
 if __name__ == "__main__":
     # Test Knowledge Distillation Loss
     print("Testing Knowledge Distillation Loss:")
@@ -305,3 +374,19 @@ if __name__ == "__main__":
     labels = torch.randint(0, 10, (32,))
     loss = icarl_loss(logits, labels)
     print(f"iCaRL Loss: {loss.item():.4f}")
+    
+    # Test InterCluster Loss
+    print("\nTesting InterCluster Loss (RICS):")
+    icl_loss = InterClusterLoss(lambda_reg=1.0)
+    features = torch.randn(32, 256)
+    labels = torch.randint(0, 5, (32,))
+    # First call should return 0 (no centroids yet)
+    loss = icl_loss(features, labels)
+    print(f"InterCluster Loss (no centroids): {loss.item():.4f}")
+    # Update centroids
+    icl_loss.update_centroids(features, labels)
+    # Second call should compute loss
+    features2 = torch.randn(32, 256)
+    labels2 = torch.randint(5, 8, (32,))
+    loss = icl_loss(features2, labels2)
+    print(f"InterCluster Loss (with centroids): {loss.item():.4f}")
