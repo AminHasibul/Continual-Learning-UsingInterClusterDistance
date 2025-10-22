@@ -9,7 +9,7 @@ This repository provides a modular and extensible framework for experimenting wi
 ### Key Features
 
 - **Custom Architectures**: Implementations of CNN and ResNet architectures optimized for continual learning
-  - SimpleCNN with feature extraction support for ICF
+  - SimpleCNN/ResNet with feature extraction support for ICF
 - **Continual Learning Strategies**: Ready-to-use strategies for preventing catastrophic forgetting
   - ClusterAwareReplayFreeCL with Inter CLuster Fitness Function  integration
 - **Benchmark Framework**: Tools for evaluating continual learning methods with comprehensive metrics
