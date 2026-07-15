@@ -43,8 +43,10 @@ Full CAR (22.5%) does **not** beat replay alone (23.1%): the unbounded
 ICF term adds noise, not signal. A λ sweep over {0.1, 1, 5, 10, 20, 50}
 confirms accuracy only decreases as ICF weight increases.
 
-**Takeaway:** unbounded inter-cluster repulsion is the wrong formulation;
-bounded feature-space regularization is the needed fix (future work).
+**Takeaway:** unbounded inter-cluster repulsion is a self-defeating
+objective in this setting. Whether a constrained formulation recovers
+the intended benefit — or whether inter-cluster repulsion is simply the
+wrong objective for retention — remains an open question.
 
 ---
 
@@ -59,6 +61,7 @@ bounded feature-space regularization is the needed fix (future work).
 - `example_cluster_aware_cl.py`, `test_cluster_aware_cl.py`, `test_framework.py`
   — usage example and tests
 
+---
 
 ## Reproducing the results
 
@@ -80,7 +83,7 @@ accuracy and final average accuracy over seeds {42, 123, 456}.
 
 - **Dataset:** Split CIFAR-10, 5 tasks, 2 classes/task, fixed order
   [0,1],[2,3],[4,5],[6,7],[8,9]
-- **Backbone:** ResNet-18; conv1 = 3×3 stride-1, max-pool
+- **Backbone:** ResNet-18 from scratch; conv1 = 3×3 stride-1, max-pool
   removed (for 32×32 input)
 - **Training:** Adam, lr=1e-3, 20 epochs/task, batch size 32
 - **Buffer:** 20 exemplars/class
