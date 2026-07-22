@@ -20,10 +20,11 @@ reminds the network of the past so it forgets less.
 
 This project tests one extra idea on top of replay. The idea is to also push
 the features of new classes **away** from the features of old classes, so the
-classes stay well separated in the network's internal space. We call this the
-**Inter-Cluster Force (ICF)**, and the full method **Cluster-Aware Replay
-(CAR)**. Intuitively, keeping classes further apart might make them easier to
-tell apart and reduce forgetting.
+classes stay well separated in the network's internal space. We refer to this
+as the inter-cluster repulsion term, denoted **ICF** to retain the acronym of
+the original Inter-Cluster Fitness formulation, and the full method
+**Cluster-Aware Replay (CAR)**. Intuitively, keeping classes further apart
+might make them easier to tell apart and reduce forgetting.
 
 **The honest result: it does not help.** This is a *negative-results study*.
 We show that, in the setup we tested, always keeping this repulsion turned on
@@ -45,8 +46,9 @@ do not spend time on the same idea without knowing its limits.
    network's features. During later training, an extra term in the loss pushes
    every image's features **away** from these old centroids.
 4. **Keep the repulsion always on.** The centroids are computed once and never
-   updated afterwards. This "always-on" design is exactly the part we show is
-   problematic — the centroids go stale and the extra term stops helping.
+   updated afterwards. This "always-on" design, together with the fact that the
+   stored centroids may become stale, is the part we study as a possible source
+   of the method's failure.
 
 ---
 
@@ -130,12 +132,12 @@ rebuild all aggregate numbers without retraining.
 
 ## Why the method fails (short version)
 
-Because the centroids are frozen after their task, the network's features keep
-changing during later training while the centroids do not. The old centroids
-quickly become **stale** and stop describing where those classes actually live
-in feature space. Pushing away from stale points adds noise rather than useful
-structure, so the repulsion term ends up doing nothing helpful. Section VI of
-the paper discusses this in detail.
+The implementation combines an always-active repulsion objective with
+centroids that are not refreshed after later feature-extractor updates. The
+stored centroids may therefore become stale. Our experiments diagnose this
+complete preliminary implementation; they do not isolate whether
+non-saturation, centroid staleness, or their interaction is primarily
+responsible for the observed failure.
 
 ---
 
