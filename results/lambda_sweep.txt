@@ -1,0 +1,12 @@
+Lambda Sweep Results
+Seeds: [42, 123, 456]
+Std = population std (ddof=0) of per-seed final-average accuracy
+
+lambda    Avg Acc (%)    Std (%)
+-----------------------------------
+0.1              22.5        1.4  <- BEST
+1.0              21.9        2.4
+5.0              22.1        0.3
+10.0             21.9        1.8
+20.0             20.3        0.9
+50.0             20.1        0.5

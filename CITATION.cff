@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "Failure Modes of Always-On Inter-Cluster Repulsion in Replay-Based Continual Learning"
+authors:
+  - family-names: "Amin"
+    given-names: "Md Hasibul"
+  - family-names: "Alam"
+    given-names: "Tamzid Tanvi"
+date-released: 2026-07-22
+identifiers:
+  - type: other
+    value: "arXiv:2510.07648"
+repository-code: "https://github.com/AminHasibul/Continual-Learning-UsingInterClusterDistance"
+license: MIT
