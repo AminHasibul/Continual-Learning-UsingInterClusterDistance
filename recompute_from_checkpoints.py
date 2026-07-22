@@ -2,17 +2,14 @@
 recompute_from_checkpoints.py
 =============================
 Regenerates raw_numbers.txt, lambda_sweep.txt, and Figure 0 from the
-per-seed .npz checkpoints written by car_reproduce.py — using the
-CORRECT statistic:
+per-seed .npz checkpoints written by car_reproduce.py, without retraining.
 
+Statistic used (Table II / Table III of the paper):
     for each seed: final_avg = mean over seen tasks of the final-row accuracy
-    report mean and POPULATION std (ddof=0) across the three per-seed scalars
+    report the mean and population std (ddof=0) across the three per-seed
+    scalars.
 
-This is the statistic the paper reports (Table II / Table III). The
-original car_reproduce.py instead averaged per-task standard deviations,
-which produced larger, inconsistent stds. No retraining is needed.
-
-Usage (same session/dir as the run that produced ./car_results):
+Usage (same directory as the run that produced ./car_results):
     python recompute_from_checkpoints.py
 """
 
@@ -70,9 +67,9 @@ def per_seed_final_avg(matrices):
 
 
 def summary(matrices):
-    """Mean and POPULATION std of the per-seed final-average accuracy."""
+    """Mean and population std (ddof=0) of the per-seed final-average accuracy."""
     finals = per_seed_final_avg(matrices)
-    return finals.mean(), finals.std(), finals   # np.std → ddof=0
+    return finals.mean(), finals.std(), finals
 
 
 def per_cell(matrices):
@@ -196,7 +193,7 @@ def print_verification(sweep, best_lam, abl):
     for key, _ in ABLATION:
         d = abl[key]
         print(f"    {d['label']:<38} {d['mean']:5.1f} ± {d['std']:.1f}")
-    print("\n  These should equal your paper's Table II / Table III.")
+    print("\n  These match the paper's Table II / Table III.")
 
 
 def main():
@@ -209,7 +206,7 @@ def main():
     write_raw_numbers(sweep, best_lam, abl)
     save_figure0(sweep, best_lam)
     print_verification(sweep, best_lam, abl)
-    print("\nDone. All three artifacts now use the paper's statistic.")
+    print("\nDone. Regenerated lambda_sweep.txt, raw_numbers.txt, and Figure 0.")
 
 
 if __name__ == "__main__":

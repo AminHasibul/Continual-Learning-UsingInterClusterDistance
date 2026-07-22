@@ -1,11 +1,11 @@
 """
 car_reproduce.py
 ================
-Clean reproduction script for arXiv:2510.07648
+Reproduction script for arXiv:2510.07648
 Cluster-Aware Replay (CAR) on Split CIFAR-10
 
-Checkpoint-aware: saves after every (lambda, seed) run.
-On disconnect → re-run the script → resumes from last checkpoint.
+Checkpoint-aware: saves after every (lambda, seed) run. If the process is
+interrupted, re-run the script and it resumes from the last checkpoint.
 
 Produces:
   - Lambda sweep : finds best λ ∈ {0.1, 1, 5, 10, 20, 50}
@@ -142,11 +142,9 @@ LAMBDA_SWEEP = [0.1, 1.0, 5.0, 10.0, 20.0, 50.0]
 
 
 def final_scalar_stats(all_matrices):
-    """Paper's statistic (Table II / Table III): one final-average-accuracy
-    scalar per seed (mean over seen tasks of that seed's final-row accuracy),
-    then the POPULATION std (ddof=0) across those per-seed scalars.
-    Returns (mean, std) in percent. This replaces the earlier, incorrect
-    'average of per-task standard deviations'."""
+    """Compute one final-average-accuracy scalar per seed (mean over seen
+    tasks of that seed's final-row accuracy), then the population std
+    (ddof=0) across those per-seed scalars. Returns (mean, std) in percent."""
     finals = []
     for m in all_matrices:
         fr = m[NUM_TASKS - 1]
@@ -592,9 +590,8 @@ def print_table3(results):
 # 14. FIGURES 1–4
 # ─────────────────────────────────────────────
 def save_figure1(mean_mat, std_mat, ft_mean_mat=None):
-    """Final per-task accuracy. If the real fine-tuning ablation matrix is
-    provided, plot it as the comparison; otherwise plot CAR alone. No
-    placeholder/illustrative values are ever used."""
+    """Final per-task accuracy. If the fine-tuning ablation matrix is
+    provided, plot it as the comparison; otherwise plot CAR alone."""
     final  = mean_mat[NUM_TASKS - 1]
     errs   = std_mat[NUM_TASKS - 1]
     tasks  = [f"T{i+1}" for i in range(NUM_TASKS)]
@@ -785,9 +782,9 @@ def main():
     print("  ALL DONE")
     print(f"  Best λ = {best_lam}")
     print(f"  Outputs in {RESULTS_DIR}/")
-    print("  → raw_numbers.txt  : paste into paper")
-    print("  → figure0–4 .png   : paper figures")
-    print("  → lambda_sweep.txt : add to paper setup section")
+    print("  → raw_numbers.txt  : all aggregate numbers")
+    print("  → figure0–4 .png   : figures")
+    print("  → lambda_sweep.txt : lambda sweep summary")
     print("="*60)
 
 
